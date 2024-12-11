@@ -1,40 +1,40 @@
+import Map "mo:base/HashMap";
+import Text "mo:base/Text";
 
-actor hesap_makinesi {
-    var hucre: Int = 0; 
+actor Phonebook {
 
-   
-    // Toplama İşlemi
-    public shared func toplama(s: Int): async Int {
-        hucre += s; // Toplama işlemi yap
-        return hucre; // Sonucu döndür
+    type Name = Text;
+    type Phone = Text;
+
+    type Entry = {
+      desc: Text;
+      phone: Phone;
     };
 
+    type Message = {
+      receiver: Text;
+      message: Text;
+    };
+
+    let phoneBook = Map.HashMap<Name, Entry>(0, Text.equal, Text.hash);
+
+    let MessageHistory = Map.HashMap<Phone, Message>(0, Text.equal, Text.hash);
+
+    public func insert(name: Name, entry: Entry): async() {
+      phoneBook.put(name, entry);
+    };
     
-    // Çıkarma İşlemi
-    public shared func cikarma(s: Int): async Int {
-        hucre -= s; // Çıkarma işlemi yap
-        return hucre; // Sonucu döndür
+    public query func getPhone(name: Name): async ?Entry {
+      phoneBook.get(name)
     };
 
-   
-    // Çarpma İşlemi
-    public shared func carpma(s: Int): async Int {
-        hucre *= s; // Çarpma işlemi yap
-        return hucre; // Sonucu döndür
+    public func sendMessage(senderPhone: Phone,message: Message): async (){
+      MessageHistory.put(senderPhone, message);
     };
 
- 
- public shared func bolme(s: Int): async ?Int {
-    if (s == 0) {
-        return null; // Sıfıra bölünmeye izin vermemek için null döndür
+    public query func sentMessages(senderPhone: Phone): async ?Message {
+      MessageHistory.get(senderPhone)
     };
-    hucre /= s;
-    return ?hucre; // Güncellenmiş değeri döndür
+
+
 };
-
-
-    // Mevcut hücre değerini döndüren işlem
-    public shared func get_hucre(): async Int {
-        return hucre; // Mevcut hesaplama sonucunu döndür
-    };
-}; 
